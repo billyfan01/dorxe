@@ -1,0 +1,44 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+
+version: '3.7'
+
+# Define services
+services:
+  api:
+    restart: always
+    image: asia.gcr.io/dorxe-278812/dorxe-api
+    ports:
+      - "8080:8080" 
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://10.101.32.3:3306/dorxe?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: api
+      SPRING_DATASOURCE_PASSWORD: cpE1wimsBipzP9xO
+
+  mobile:
+    restart: always
+    image: asia.gcr.io/dorxe-278812/dorxe-mobile
+    ports:
+      - "3000:3000"
+    command:
+      - /bin/bash 
+      - -c 
+      - |
+        cd dorxe-mobile
+        yarn run start
+  
+  nginx:
+    restart: always
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/logs:/var/log/nginx
+      - ./nginx/html:/usr/share/nginx/html
+
+      # MYSQL_ROOT_PASSWORD: 82vaKxxpzD7kMFC7
+      # MYSQL_DATABASE: dorxe
+      # MYSQL_USER: api
+      # MYSQL_PASSWORD: cpE1wimsBipzP9xO
+      # MYSQL_USER: admin
+      # MYSQL_PASSWORD: 9FcGBJ3P0vzmOocL
